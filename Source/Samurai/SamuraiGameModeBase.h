@@ -13,5 +13,6 @@ UCLASS()
 class SAMURAI_API ASamuraiGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+	ASamuraiGameModeBase();
 };
