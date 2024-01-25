@@ -14,6 +14,11 @@ ABaseCharacter::ABaseCharacter()
 	CameraBoomComponent->SetupAttachment(RootComponent);
 	CameraBoomComponent->bUsePawnControlRotation = true;
 
+	//Smooth camera movement
+	CameraBoomComponent->SocketOffset = {0.0f, 50.0f, 0.0f};
+	CameraBoomComponent->bEnableCameraLag = true;
+	CameraBoomComponent->bEnableCameraRotationLag = true;
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(CameraBoomComponent, USpringArmComponent::SocketName);
 
