@@ -49,6 +49,9 @@ protected:
 	EMovementState MovementState = EMovementState::None;
 
 	UPROPERTY(BlueprintReadWrite)
+	EMovementState PrevMovementState = EMovementState::None;
+
+	UPROPERTY(BlueprintReadWrite)
 	EStance Stance = EStance::Standing;
 
 	UPROPERTY(BlueprintReadWrite)
