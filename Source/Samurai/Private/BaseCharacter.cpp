@@ -33,7 +33,6 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	SetEssentialValues();
 }
 
 void ABaseCharacter::LookUpAndDown(float Axis)
@@ -63,8 +62,37 @@ void ABaseCharacter::SetEssentialValues()
 	{
 		IsMovingC = false;
 	}
-
+	
+	CheckIfHasMovementInput();
+	SetAimYawRate();
 	CreateMovingInputWithInterp(GetControlForwardAndRightVector().v1);
+}
+
+void ABaseCharacter::CacheValues()
+{
+	PreviousVelocityC = GetVelocity();
+	PreviousAimYawC = GetControlRotation().Yaw;
+}
+
+void ABaseCharacter::SetAimYawRate()
+{
+	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+	double RotationDif = GetControlRotation().Yaw - PreviousAimYawC;
+
+	AimYawRateC = UKismetMathLibrary::Abs((RotationDif/ DeltaSeconds));
+}
+
+void ABaseCharacter::CheckIfHasMovementInput()
+{
+	FVector CurrentAcceleration = GetCharacterMovement()->GetCurrentAcceleration();
+	float MaxAcceleration = GetCharacterMovement()->GetMaxAcceleration();
+
+	MovementInputAmountC = (CurrentAcceleration.Length() / MaxAcceleration);
+	if(MovementInputAmountC > 0.0f)
+	{
+		HasMovementInputC = true;
+		LastMovementInputRotationC = UKismetMathLibrary::MakeRotFromX(CurrentAcceleration);
+	}
 }
 
 void ABaseCharacter::CreateMovingInputWithInterp(FVector WorldMovementDirectionTarget)
@@ -73,7 +101,6 @@ void ABaseCharacter::CreateMovingInputWithInterp(FVector WorldMovementDirectionT
 	float DeltaSec = GetWorld()->GetDeltaSeconds();
 
 	MovementDirectionInterpC.v1 = FMath::VInterpTo(MovementDirectionInterpC.v1,WorldMovementDirectionTarget, DeltaSec, RelativeAccelerationLength);
-	UE_LOG(LogTemp, Warning, TEXT("The vector value is: %s"), *MovementDirectionInterpC.v1.ToString());
 }
 
 FTwoVectors ABaseCharacter::GetControlForwardAndRightVector()

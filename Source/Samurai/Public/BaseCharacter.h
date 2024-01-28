@@ -29,6 +29,13 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void SetEssentialValues();
 
+	UFUNCTION(BlueprintCallable)
+	void CacheValues();
+
+	void SetAimYawRate();
+
+	void CheckIfHasMovementInput();
+
 	FVector CalculateAcceleration() const;
 	float GetCharacterSpeedIfItMove() const;
 
