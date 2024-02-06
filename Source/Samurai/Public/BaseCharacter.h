@@ -52,30 +52,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess))
 	class UCameraComponent* CameraComponent;
 
-	UPROPERTY(BlueprintReadWrite)
-	EMovementState MovementState = EMovementState::None;
-
-	UPROPERTY(BlueprintReadWrite)
-	EMovementState PrevMovementState = EMovementState::None;
-
-	UPROPERTY(BlueprintReadWrite)
-	EStance Stance = EStance::Standing;
-
-	UPROPERTY(BlueprintReadWrite)
-	EStance PreviousStance = EStance::Standing;
-
-	UPROPERTY(BlueprintReadWrite)
-	EStance NewStance = EStance::Standing;
-	
-	UPROPERTY(BlueprintReadWrite)
-	EStance DesiredStance = EStance::Standing;
-	
-	UPROPERTY(BlueprintReadWrite)
-	EPMovementMode MovementMode = EPMovementMode::Default;
-
-	UPROPERTY(BlueprintReadWrite)
-	EGate DesiredGate = EGate::Running;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	float LookUpAndDownRate;
 

@@ -2,29 +2,32 @@
 #include "MovementEnums.generated.h"
 
 UENUM(BlueprintType) // Optional for Blueprint accessibility
-enum class EMovementState : uint8
+enum class EALS_MovementState : uint8
 {
 	None,
 	Grounded,
-	InAir
+	InAir,
+	Mantling,
+	Ragdoll,
+	Crawl,
+	Prone
 };
 
 UENUM(BlueprintType) // Optional for Blueprint accessibility
-enum class EStance : uint8
+enum class EALS_Stance : uint8
 {
-	//None,
 	Standing,
 	Crouching
 };
 
 UENUM(BlueprintType) // Optional for Blueprint accessibility
-enum class EPMovementMode : uint8
+enum class EALSP2_MovementMode : uint8
 {
 	Default
 };
 
 UENUM(BlueprintType) // Optional for Blueprint accessibility
-enum class EGate : uint8
+enum class EALS_Gait : uint8
 {
 	Walking,
 	Running,
