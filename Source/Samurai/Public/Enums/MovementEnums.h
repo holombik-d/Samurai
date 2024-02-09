@@ -33,3 +33,12 @@ enum class EALS_Gait : uint8
 	Running,
 	Sprinting
 };
+
+UENUM(BlueprintType) // Optional for Blueprint accessibility
+enum class EMovementDirection : uint8
+{
+	Forward,
+	Right,
+	Left,
+	Backward
+};

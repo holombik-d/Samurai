@@ -105,3 +105,15 @@ FVector UHelpfulFunctionLibrary::CalculateRelativeAcceleration(const UObject* Wo
 	}
 	return ReturnVec;
 }
+
+bool UHelpfulFunctionLibrary::AngleInRange(float Angle, float MinAngle, float MaxAngle, float Buffer,
+	bool IncreaseBuffer)
+{
+	if (IncreaseBuffer == true)
+	{
+		const bool InRange = UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle - Buffer, MaxAngle + Buffer, true, true);
+		return InRange;
+	}
+	const bool InRange = UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle = Buffer, MaxAngle - Buffer, true, true);
+	return InRange;
+}

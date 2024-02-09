@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "JakubW_FunctionsLibrary| Character", meta = (BlueprintThreadSafe, WorldContext = "WorldContextObject", DisplayName = "Get Anim Curve Value Clamped", Keywords = "Character AnimCurve"))
 	static float GetClampedCurveValue(const UObject* WorldContextObject, FName Curve, float Bias=0, float ClampMin=0, float ClampMax=1);
 
-	UFUNCTION(BlueprintPure, Category = "JakubW_FunctionsLibrary| Character", meta = (WorldContext = "WorldContextObject", DisplayName = "Calculate Relative Acceleration Amount (Fast)", Keywords = "Movement Animations Character", BlueprintThreadSafe))
+	UFUNCTION(BlueprintPure, Category = "FunctionsLibrary| Character", meta = (WorldContext = "WorldContextObject", DisplayName = "Calculate Relative Acceleration Amount (Fast)", Keywords = "Movement Animations Character", BlueprintThreadSafe))
 	static FVector CalculateRelativeAcceleration(const UObject* WorldContextObject, const UCharacterMovementComponent* CharMove, FRotator CharRot = FRotator(0,0,0), FVector Acceleration = FVector(0,0,0), FVector Velocity = FVector(0,0,0));
+
+	UFUNCTION(BlueprintPure, Category = "FunctionsLibrary| Character", meta = (WorldContext = "WorldContextObject", DisplayName = "Angle In Range", Keywords = "Movement Animations Character", BlueprintThreadSafe))
+	static bool AngleInRange(float Angle, float MinAngle, float MaxAngle, float Buffer, bool IncreaseBuffer);
 };

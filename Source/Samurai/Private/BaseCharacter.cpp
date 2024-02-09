@@ -23,8 +23,8 @@ ABaseCharacter::ABaseCharacter()
 	CameraComponent->SetupAttachment(CameraBoomComponent, USpringArmComponent::SocketName);
 
 	PrimaryActorTick.bCanEverTick = true;
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
