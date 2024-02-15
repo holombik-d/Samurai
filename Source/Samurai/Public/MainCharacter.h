@@ -19,53 +19,64 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FTwoVectors MovementDirectionInterpC = {FVector(0.0,0.0,0.04), FVector(0.0,0.0,0.0)};
+	void SetEssentialValues(float DeltaTime);
+	void CacheValues();
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool IsMovingC = false;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool HasMovementInputC = false;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool IsStartedMovementOnTargetC = false;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FVector AccelerationC = FVector(0, 0, 0);
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FVector RelativeAcceleractionC = FVector(0, 0, 0);
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float SpeedC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float MovementInputAmountC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float MovementSpeedDifferenceC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float AimYawRateC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FRotator LastVelocityRotationC = FRotator(0,0,0);
-
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FRotator LastMovementInputRotationC = FRotator(0,0,0);
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	FVector CurrentAcceleration = FVector::ZeroVector;
+	FVector Acceleration = FVector::ZeroVector;
+	FVector PreviousVelocity = FVector::ZeroVector;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Cached Variables", meta = (AllowPrivateAccess = "True"))
-	float PreviousAimYawC = 0.0;
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	FRotator ControlRotation = FRotator::ZeroRotator;
+	FRotator LastMovementInputRotation = FRotator::ZeroRotator;
+	FRotator AimingRotation = FRotator::ZeroRotator;
+	FRotator LastVelocityRotation = FRotator::ZeroRotator;
+	FRotator TargetRotation = FRotator::ZeroRotator;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Cached Variables", meta = (AllowPrivateAccess = "True"))
-	FVector PreviousVelocityC = FVector(0, 0, 0);
-
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	float EasedMaxAcceleration = 0.0f;
+	float Speed = 0.0f;
+	float PreviousAimYaw = 0.0f;
+	float MovementInputAmount = 0.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
+	float LookLeftRightRate = 1.25f;
+	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
+	float LookUpDownRate = 1.25f;
+	float AimYawRate = 0.0f;
+	
+	bool bIsMoving = false;
+	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
+	bool bHasMovementInput = false;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//*******INPUT*******//
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Input")
+	void ForwardMovementAction(float Value);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void RightMovementAction(float Value);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void CameraUpAction(float Value);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void CameraRightAction(float Value);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void JumpAction(bool bValue);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void SprintAction(bool bValue);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void StanceAction();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void WalkAction();
+	
 };

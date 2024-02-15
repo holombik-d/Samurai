@@ -12,4 +12,10 @@ ASamuraiGameModeBase::ASamuraiGameModeBase()
 	{
 		DefaultPawnClass = SamuraiCharacter_BP.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerController_BP(TEXT("/Game/Blueprints/CharacterLogic/CustomPlayerController"));
+	if(PlayerController_BP.Class != nullptr)
+	{
+		PlayerControllerClass = PlayerController_BP.Class;
+	}
 }
