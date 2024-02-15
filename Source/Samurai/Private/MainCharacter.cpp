@@ -21,10 +21,48 @@ void AMainCharacter::BeginPlay()
 
 	GetMesh()->AddTickPrerequisiteActor(this);
 
+	if(Stance == EALS_Stance::Crouching)
+	{
+		UnCrouch();
+	}
+	else if(Stance == EALS_Stance::Crouching)
+	{
+		Crouch();
+	}
+
 	TargetRotation = GetActorRotation();
 	LastVelocityRotation = TargetRotation;
 	LastMovementInputRotation = TargetRotation;
 }
+
+void AMainCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	
+	SetStance(EALS_Stance::Crouching);
+}
+
+void AMainCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+
+	SetStance(EALS_Stance::Standing);
+}
+
+void AMainCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if(GetCharacterMovement()->MovementMode == MOVE_Walking || GetCharacterMovement()->MovementMode == MOVE_NavWalking)
+	{
+		SetMovementState(EALS_MovementState::Grounded);
+	}
+	else if(GetCharacterMovement()->MovementMode == MOVE_Falling)
+	{
+		SetMovementState(EALS_MovementState::InAir);
+	}
+}
+
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
@@ -33,6 +71,36 @@ void AMainCharacter::Tick(float DeltaTime)
 	
 	SetEssentialValues(DeltaTime);
 	CacheValues();
+}
+
+void AMainCharacter::SetDesiredGait(EALS_Gait NewGait)
+{
+	DesiredGait = NewGait;
+}
+
+void AMainCharacter::SetDesireStance(EALS_Stance NewStance)
+{
+	DesiredStance = NewStance;
+}
+
+void AMainCharacter::SetStance(EALS_Stance NewStance, bool bForce)
+{
+	if(bForce || Stance != NewStance)
+	{
+		const EALS_Stance PreviousStance = Stance;
+		Stance = NewStance;
+		//OnStanceChanged(PreviousStance)
+	}
+}
+
+void AMainCharacter::SetMovementState(EALS_MovementState NewMovementState)
+{
+	MovementState = NewMovementState;
+}
+
+EALS_Stance AMainCharacter::GetStance()
+{
+	return Stance;
 }
 
 void AMainCharacter::SetEssentialValues(float DeltaTime)
@@ -108,12 +176,63 @@ void AMainCharacter::JumpAction_Implementation(bool bValue)
 
 void AMainCharacter::SprintAction_Implementation(bool bValue)
 {
+	if(bValue)
+	{
+		SetDesiredGait(EALS_Gait::Sprinting);
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "EALS_Gait::Sprinting");
+	}
+	else
+	{
+		SetDesiredGait(EALS_Gait::Running);
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "EALS_Gait::Running");
+	}
 }
 
 void AMainCharacter::StanceAction_Implementation()
 {
+	UWorld* World = GetWorld();
+	check(World);
+
+	const float PreviousStanceInputTime = LastStanceInputTime;
+	LastStanceInputTime = World->GetTimeSeconds();
+	if(LastStanceInputTime - PreviousStanceInputTime <= 0.3f)
+	{
+		if(Stance != EALS_Stance::Standing)
+		{
+			SetDesireStance(EALS_Stance::Crouching);
+		}
+		else if(Stance != EALS_Stance::Crouching)
+		{
+			SetDesireStance(EALS_Stance::Standing);
+		}
+		return;
+	}
+
+	if(MovementState == EALS_MovementState::Grounded)
+	{
+		if(Stance == EALS_Stance::Standing)
+		{
+			SetDesireStance(EALS_Stance::Crouching);
+			Crouch();
+		}
+		else if(Stance == EALS_Stance::Crouching)
+		{
+			SetDesireStance(EALS_Stance::Standing);
+			UnCrouch();
+		}
+	}
 }
 
 void AMainCharacter::WalkAction_Implementation()
 {
+	if(DesiredGait == EALS_Gait::Walking)
+	{
+		SetDesiredGait(EALS_Gait::Running);
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "SetDesiredGait(EALS_Gait::Running);");
+	}
+	else if(DesiredGait == EALS_Gait::Running)
+	{
+		SetDesiredGait(EALS_Gait::Walking);
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "SetDesiredGait(EALS_Gait::Walking);");
+	}
 }

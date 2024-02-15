@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/MovementEnums.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -18,6 +19,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
 
 	void SetEssentialValues(float DeltaTime);
 	void CacheValues();
@@ -39,6 +43,9 @@ protected:
 	float Speed = 0.0f;
 	float PreviousAimYaw = 0.0f;
 	float MovementInputAmount = 0.0f;
+
+	/** Last time the 'first' crouch/roll button is pressed */
+	float LastStanceInputTime = 0.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
 	float LookLeftRightRate = 1.25f;
@@ -49,6 +56,21 @@ protected:
 	bool bIsMoving = false;
 	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
 	bool bHasMovementInput = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Gait DesiredGait = EALS_Gait::Running;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Stance Stance = EALS_Stance::Standing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Stance DesiredStance = EALS_Stance::Standing;
+
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	EALS_MovementState MovementState = EALS_MovementState::None;
+
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	EALS_MovementState PrevMovementState = EALS_MovementState::None;
 	
 public:	
 	// Called every frame
@@ -79,4 +101,18 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void WalkAction();
 	
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetDesiredGait(EALS_Gait NewGait);
+
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetDesireStance(EALS_Stance NewStance);
+
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetStance(EALS_Stance NewStance, bool bForce = false);
+
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetMovementState(EALS_MovementState NewMovementState);
+
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	EALS_Stance GetStance();
 };

@@ -92,14 +92,26 @@ void AMyPlayerController::JumpAction(const FInputActionValue& Value)
 
 void AMyPlayerController::SprintAction(const FInputActionValue& Value)
 {
+	if(_PossesedCharacter)
+	{
+		_PossesedCharacter->SprintAction(Value.Get<bool>());
+	}
 }
 
 void AMyPlayerController::WalkAction(const FInputActionValue& Value)
 {
+	if(_PossesedCharacter)
+	{
+		_PossesedCharacter->WalkAction();
+	}
 }
 
 void AMyPlayerController::StanceAction(const FInputActionValue& Value)
 {
+	if(_PossesedCharacter && Value.Get<bool>())
+	{
+		_PossesedCharacter->StanceAction();
+	}
 }
 
 void AMyPlayerController::CameraUpAction(const FInputActionValue& Value)
