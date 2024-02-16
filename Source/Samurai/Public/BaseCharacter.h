@@ -16,7 +16,7 @@ class SAMURAI_API ABaseCharacter : public AMainCharacter
 	GENERATED_BODY()
 
 public:
-	ABaseCharacter();
+	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
