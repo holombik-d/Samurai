@@ -382,11 +382,9 @@ void AMainCharacter::WalkAction_Implementation()
 	if(DesiredGait == EALS_Gait::Walking)
 	{
 		SetDesiredGait(EALS_Gait::Running);
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "SetDesiredGait(EALS_Gait::Running);");
 	}
 	else if(DesiredGait == EALS_Gait::Running)
 	{
 		SetDesiredGait(EALS_Gait::Walking);
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, "SetDesiredGait(EALS_Gait::Walking);");
 	}
 }
