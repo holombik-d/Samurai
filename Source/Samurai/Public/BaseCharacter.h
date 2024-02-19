@@ -16,34 +16,8 @@ class SAMURAI_API ABaseCharacter : public AMainCharacter
 	GENERATED_BODY()
 
 public:
-	ABaseCharacter();
+	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaSeconds) override;
-
-private:
-	UFUNCTION(BlueprintCallable)
-	void LookUpAndDown(float Axis);
-
-	UFUNCTION(BlueprintCallable)
-	void LookLeftAndRight(float Axis);
-
-	UFUNCTION(BlueprintCallable)
-	void SetEssentialValues();
-
-	UFUNCTION(BlueprintCallable)
-	void CacheValues();
-
-	void SetAimYawRate();
-
-	void CheckIfHasMovementInput();
-
-	FVector CalculateAcceleration() const;
-	float GetCharacterSpeedIfItMove() const;
-
-	UFUNCTION(BlueprintPure)
-	FTwoVectors GetControlForwardAndRightVector();
-	
-	UFUNCTION(BlueprintCallable)
-	void CreateMovingInputWithInterp(FVector WorldMovementDirectionTarget);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess))
@@ -51,19 +25,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess))
 	class UCameraComponent* CameraComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	float LookUpAndDownRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	float LookLefAndRightRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	float MoveForwardAndBackwardScale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	float MoveLeftAndRightScale;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite);
-	bool WalkActionPressed;
 };

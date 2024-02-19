@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/MovementEnums.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "HelpfulFunctionLibrary.generated.h"
 
@@ -54,4 +55,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "FunctionsLibrary| Character", meta = (WorldContext = "WorldContextObject", DisplayName = "Angle In Range", Keywords = "Movement Animations Character", BlueprintThreadSafe))
 	static bool AngleInRange(float Angle, float MinAngle, float MaxAngle, float Buffer, bool IncreaseBuffer);
+
+	UFUNCTION(BlueprintPure, Category = "FunctionsLibrary| Character", meta = (WorldContext = "WorldContextObject", DisplayName = "Angle In Range", Keywords = "Movement Animations Character", BlueprintThreadSafe))
+	static EMovementDirection CalculateQuadrant(EMovementDirection Current, float FRThreshold, float FLThreshold,
+												   float BRThreshold,
+												   float BLThreshold, float Buffer, float Angle);
 };

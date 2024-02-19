@@ -1,8 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/CustomCharacterMovementComponent.h"
+#include "Enums/MovementEnums.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -12,60 +12,173 @@ class SAMURAI_API AMainCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	AMainCharacter();
+	// Constructors and initialization functions
+	AMainCharacter(const FObjectInitializer& ObjectInitializer);
+	virtual void PostInitializeComponents() override;
+
+	// Essential movement-related functions
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	
+	FORCEINLINE class UCustomCharacterMovementComponent* GetCustomMovementComponent() const
+	{
+		return CustomCharacterMovementComponent;
+	}
+	
+	UFUNCTION(BlueprintCallable, Category = "MovementSystem")
+	EALS_Gait GetAllowedGait() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "MovementSystem")
+	EALS_Gait GetActualGait(EALS_Gait AllowedGait) const;
+	
+	UFUNCTION(BlueprintCallable, Category = "MovementSystem")
+	void SetGait(EALS_Gait NewGait);
 
 protected:
-	// Called when the game starts or when spawned
+	// Initialization and event functions
 	virtual void BeginPlay() override;
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
+	virtual void OnStanceChanged();
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FTwoVectors MovementDirectionInterpC = {FVector(0.0,0.0,0.04), FVector(0.0,0.0,0.0)};
+	// Internal update and control functions
+	void SetEssentialValues(float DeltaTime);
+	void CacheValues();
+	void ForceUpdateCharacterState();
+	void SetMovementModel();
+	void SetRotationMode(const ERotationMode NewRotationMode, bool bForce);
+	void SetDesiredRotationMode(ERotationMode NewRotationMode);
+	void UpdateCharacterMovement();
+
+	// Essential information properties
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	FVector CurrentAcceleration = FVector::ZeroVector;
+	FVector Acceleration = FVector::ZeroVector;
+	FVector PreviousVelocity = FVector::ZeroVector;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool IsMovingC = false;
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	FRotator ControlRotation = FRotator::ZeroRotator;
+	FRotator LastMovementInputRotation = FRotator::ZeroRotator;
+	FRotator AimingRotation = FRotator::ZeroRotator;
+	FRotator LastVelocityRotation = FRotator::ZeroRotator;
+	FRotator TargetRotation = FRotator::ZeroRotator;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool HasMovementInputC = false;
+	UPROPERTY(BlueprintReadOnly, Category = "Essential Information")
+	float EasedMaxAcceleration = 0.0f;
+	float Speed = 0.0f;
+	float PreviousAimYaw = 0.0f;
+	float MovementInputAmount = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	bool IsStartedMovementOnTargetC = false;
+	// Input-related properties
+	float LastStanceInputTime = 0.0f;
+	float LookLeftRightRate = 1.25f;
+	float LookUpDownRate = 1.25f;
+	float AimYawRate = 0.0f;
+	bool bIsMoving = false;
+	bool CanSprint() const;
+	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
+	bool bHasMovementInput = false;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FVector AccelerationC = FVector(0, 0, 0);
+	// State-related properties
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	EALS_Gait Gait = EALS_Gait::Walking;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FVector RelativeAcceleractionC = FVector(0, 0, 0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Gait DesiredGait = EALS_Gait::Running;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float SpeedC = 0.0;
+	// Stance-related properties
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Stance Stance = EALS_Stance::Standing;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float MovementInputAmountC = 0.0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Input")
+	EALS_Stance DesiredStance = EALS_Stance::Standing;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float MovementSpeedDifferenceC = 0.0;
+	// Rotation mode properties
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	ERotationMode DesiredRotationMode = ERotationMode::LookingDirection;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	float AimYawRateC = 0.0;
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	ERotationMode RotationMode = ERotationMode::LookingDirection;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FRotator LastVelocityRotationC = FRotator(0,0,0);
+	// Movement state properties
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	EALS_MovementState MovementState = EALS_MovementState::None;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Essential Information", meta = (AllowPrivateAccess = "True"))
-	FRotator LastMovementInputRotationC = FRotator(0,0,0);
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Cached Variables", meta = (AllowPrivateAccess = "True"))
-	float PreviousAimYawC = 0.0;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Cached Variables", meta = (AllowPrivateAccess = "True"))
-	FVector PreviousVelocityC = FVector(0, 0, 0);
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	EALS_MovementState PrevMovementState = EALS_MovementState::None;
 
-public:	
-	// Called every frame
+	// Movement system settings
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|Movement System")
+	FDataTableRowHandle MovementModel;
+
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|Movement System")
+	FMovementStateSettings MovementData;
+
+	// Essential movement system functions
+	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
+	FMovementSettings GetTargetMovementSettings() const;
+
+	UPROPERTY()
+	TObjectPtr<UCustomCharacterMovementComponent> CustomCharacterMovementComponent;
+
+public:
+	// Tick function and input handling
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// Input handling functions
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Input")
+	void ForwardMovementAction(float Value);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void RightMovementAction(float Value);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void CameraUpAction(float Value);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void CameraRightAction(float Value);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void JumpAction(bool bValue);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void SprintAction(bool bValue);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void StanceAction();
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
+	void WalkAction();
 
+	// Character state setting functions
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetDesiredGait(EALS_Gait NewGait);
+	
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetDesireStance(EALS_Stance NewStance);
+	
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	void SetStance(EALS_Stance NewStance, bool bForce = false);
+	
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	
+	void SetMovementState(EALS_MovementState NewMovementState);
+	UFUNCTION(BlueprintCallable, Category = "Character States")
+	
+	EALS_Stance GetStance();
+
+	//Character essential getters
+	float GetMovementInputAmount();
+	float GetSpeed();
+	float GetAimYawRate();
+	bool GatHasMovementInput();
+	bool GetIsMoving();
+	FVector GetAcceleration();
+	FVector GetMovementInput();
+	FRotator GetRotation();
+	FRotator GetAimRotation();
+	EALS_MovementState GetPrevMovementState();
+	EALS_MovementState GetMovementState();
+	EALS_Gait GetGait();
+	
 };
