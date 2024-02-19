@@ -66,7 +66,7 @@ void AMainCharacter::SetEssentialValues(float DeltaTime)
 
 	const FVector CurrentVelocity = GetVelocity();
 
-	const FVector NewAcceleration = ((CurrentAcceleration - PreviousVelocity) / DeltaTime);
+	const FVector NewAcceleration = ((CurrentVelocity - PreviousVelocity) / DeltaTime);
 	Acceleration = NewAcceleration.IsNearlyZero() || IsLocallyControlled() ? NewAcceleration : Acceleration / 2;
 
 	Speed = CurrentVelocity.Size2D();
@@ -387,4 +387,64 @@ void AMainCharacter::WalkAction_Implementation()
 	{
 		SetDesiredGait(EALS_Gait::Walking);
 	}
+}
+
+float AMainCharacter::GetMovementInputAmount()
+{
+	return MovementInputAmount;
+}
+
+float AMainCharacter::GetSpeed()
+{
+	return Speed;
+}
+
+float AMainCharacter::GetAimYawRate()
+{
+	return AimYawRate;
+}
+
+bool AMainCharacter::GatHasMovementInput()
+{
+	return bHasMovementInput;
+}
+
+bool AMainCharacter::GetIsMoving()
+{
+	return bIsMoving;
+}
+
+FVector AMainCharacter::GetAcceleration()
+{
+	return Acceleration;
+}
+
+FVector AMainCharacter::GetMovementInput()
+{
+	return CurrentAcceleration;
+}
+
+FRotator AMainCharacter::GetRotation()
+{
+	return GetActorRotation();
+}
+
+FRotator AMainCharacter::GetAimRotation()
+{
+	return AimingRotation;
+}
+
+EALS_MovementState AMainCharacter::GetPrevMovementState()
+{
+	return PrevMovementState;
+}
+
+EALS_MovementState AMainCharacter::GetMovementState()
+{
+	return MovementState;
+}
+
+EALS_Gait AMainCharacter::GetGait()
+{
+	return Gait;
 }

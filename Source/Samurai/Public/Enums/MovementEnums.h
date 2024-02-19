@@ -115,3 +115,74 @@ struct FMovementStateSettings : public FTableRowBase
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
 	FMovementStanceSettings Aiming;
 };
+
+USTRUCT(Blueprintable)
+struct FALSMovementState
+{
+	GENERATED_BODY()
+
+private:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Movement System")
+	EALS_MovementState State = EALS_MovementState::None;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Movement System")
+	bool _None = true;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Movement System")
+	bool _Grounded = false;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Movement System")
+	bool _isInAir = false;
+
+public:
+	FALSMovementState() {};
+	FALSMovementState(const EALS_MovementState InitialState) { *this = InitialState; }
+
+	const bool& Grounded() const { return _Grounded; }
+
+	operator EALS_MovementState() const { return State; }
+	void operator=(const EALS_MovementState NewState)
+	{
+		State = NewState;
+		_None = State == EALS_MovementState::Grounded;
+		_Grounded = State == EALS_MovementState::Grounded;
+		_isInAir = State == EALS_MovementState::InAir;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FALSGait
+{
+	GENERATED_BODY()
+	
+private:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Movement System")
+	EALS_Gait Gait = EALS_Gait::Walking;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Movement System")
+	bool _Walking = true;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Movement System")
+	bool _Running = false;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Movement System")
+	bool _Sprinting = false;
+
+public:
+	FALSGait() {};
+	FALSGait(const EALS_Gait InitialGait) { *this = InitialGait; }
+
+	const bool& IsWalking() const { return _Walking; }
+	const bool& IsRunning() const { return _Running; }
+	const bool& IsSprinting() const { return  _Sprinting; }
+
+	operator FALSGait() const { return Gait; }
+
+	void operator=(const EALS_Gait NewGait)
+	{
+		Gait = NewGait;
+		_Walking = Gait == EALS_Gait::Walking;
+		_Running = Gait == EALS_Gait::Running;
+		_Sprinting = Gait == EALS_Gait::Sprinting;
+	}
+};

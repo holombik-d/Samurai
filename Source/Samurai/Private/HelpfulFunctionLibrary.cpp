@@ -6,6 +6,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
+// TODO: Split this large proto-function into smaller parts from the anim class
+// TODO: This was used for faster prototyping in previous versions of the project
+// TODO: Now this logic works pretty well, so it's time to make it shorter and easier to maintain
 void UHelpfulFunctionLibrary::UpdateMovementValues(const UObject* WorldContextObject,
                                                    const UCharacterMovementComponent* CharMove, FRotator ActorRot, FVelocityBlendCpp VelocityBlend, float DeltaX,
                                                    float VelocityBlendInterpSpeed, float AnimatedWalkSpeed, float AnimatedRunSpeed, float AnimatedSprintSpeed,
@@ -111,9 +114,31 @@ bool UHelpfulFunctionLibrary::AngleInRange(float Angle, float MinAngle, float Ma
 {
 	if (IncreaseBuffer == true)
 	{
-		const bool InRange = UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle - Buffer, MaxAngle + Buffer, true, true);
-		return InRange;
+		return UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle - Buffer, MaxAngle + Buffer, true, true);
 	}
-	const bool InRange = UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle = Buffer, MaxAngle - Buffer, true, true);
-	return InRange;
+	return  UKismetMathLibrary::InRange_FloatFloat(Angle, MinAngle + Buffer, MaxAngle - Buffer, true, true);
+}
+
+EMovementDirection UHelpfulFunctionLibrary::CalculateQuadrant(EMovementDirection Current, float FRThreshold,
+	float FLThreshold, float BRThreshold, float BLThreshold, float Buffer, float Angle)
+{
+	if (AngleInRange(Angle, FLThreshold, FRThreshold, Buffer,
+				 Current != EMovementDirection::Forward && Current != EMovementDirection::Backward))
+	{
+		return EMovementDirection::Forward;
+	}
+
+	if (AngleInRange(Angle, FRThreshold, BRThreshold, Buffer,
+					 Current != EMovementDirection::Right && Current != EMovementDirection::Left))
+	{
+		return EMovementDirection::Right;
+	}
+
+	if (AngleInRange(Angle, BLThreshold, FLThreshold, Buffer,
+					 Current != EMovementDirection::Right && Current != EMovementDirection::Left))
+	{
+		return EMovementDirection::Left;
+	}
+
+	return EMovementDirection::Backward;
 }

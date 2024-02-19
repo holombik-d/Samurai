@@ -166,4 +166,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character States")
 	
 	EALS_Stance GetStance();
+
+	//Character essential getters
+	float GetMovementInputAmount();
+	float GetSpeed();
+	float GetAimYawRate();
+	bool GatHasMovementInput();
+	bool GetIsMoving();
+	FVector GetAcceleration();
+	FVector GetMovementInput();
+	FRotator GetRotation();
+	FRotator GetAimRotation();
+	EALS_MovementState GetPrevMovementState();
+	EALS_MovementState GetMovementState();
+	EALS_Gait GetGait();
+	
 };
