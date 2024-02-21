@@ -35,7 +35,7 @@ public:
 	
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character Information", meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<AMainCharacter> Character = nullptr;
+	TObjectPtr<ABaseCharacter> Character = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph", meta = (AllowPrivateAccess = "True"))
 	FVector RelativeAccelerationAmountC = FVector(0, 0, 0);

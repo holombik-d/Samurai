@@ -9,7 +9,7 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	Character = Cast<AMainCharacter>(TryGetPawnOwner());
+	Character = Cast<ABaseCharacter>(TryGetPawnOwner());
 }
 
 void UCharacterAnimInstance::NativeBeginPlay()

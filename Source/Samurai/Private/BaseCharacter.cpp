@@ -3,6 +3,7 @@
 
 #include "BaseCharacter.h"
 
+#include "AIController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
