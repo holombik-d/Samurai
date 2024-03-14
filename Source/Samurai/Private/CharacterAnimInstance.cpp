@@ -57,18 +57,18 @@ void UCharacterAnimInstance::UpdateMovementValues(float DeltaSeconds)
 	VelocityBlend.L = FMath::FInterpTo(VelocityBlend.L, TargetBlend.L, DeltaSeconds, Config.VelocityBlendInterpSpeed);
 	VelocityBlend.R = FMath::FInterpTo(VelocityBlend.R, TargetBlend.R, DeltaSeconds, Config.VelocityBlendInterpSpeed);
 	
-	DiagonalScaleAmountC = UHelpfulFunctionLibrary::CalculateDiagonalScale(DiagonalScaleAmountCurve, VelocityBlend);
+	Grounded.DiagonalScaleAmount = UHelpfulFunctionLibrary::CalculateDiagonalScale(DiagonalScaleAmountCurve, VelocityBlend);
 	RelativeAccelerationAmountC = UHelpfulFunctionLibrary::CalculateRelativeAcceleration(this, Character->GetCharacterMovement(),
 															CharacterInformation.CharacterActorRotation, CharacterInformation.Acceleration, CharacterInformation.Velocity);
 
 	LeanAmountC.LR = FMath::FInterpTo(LeanAmountC.LR, RelativeAccelerationAmountC.Y, DeltaSeconds, Config.GroundedLeanInterpSpeed);
 	LeanAmountC.FB = FMath::FInterpTo(LeanAmountC.FB, RelativeAccelerationAmountC.X, DeltaSeconds, Config.GroundedLeanInterpSpeed);
 
-	WalkRunBlend = CalculateWalkRunBlend();
-	StrideBlend = CalculateStrideRunBlend();
+	Grounded.WalkRunBlend = CalculateWalkRunBlend();
+	Grounded.StrideBlend = CalculateStrideRunBlend();
 
-	StandingPlayRate = CalculateStandingPlayRate();
-	CrouchingPlayRate = CalculateCrouchingPlayRate();
+	Grounded.StandingPlayRate = CalculateStandingPlayRate();
+	Grounded.CrouchingPlayRate = CalculateCrouchingPlayRate();
 }
 
 void UCharacterAnimInstance::UpdateRotationValues()
@@ -79,12 +79,12 @@ void UCharacterAnimInstance::UpdateRotationValues()
 	Delta.Normalize();
 	
 	const FVector& FBOffset = YawOffset_FB->GetVectorValue(Delta.Yaw);
-	FYawC = FBOffset.X;
-	BYawC = FBOffset.Y;
+	Grounded.FYawC = FBOffset.X;
+	Grounded.BYawC = FBOffset.Y;
 
 	const FVector& LROffset = YawOffset_LR->GetVectorValue(Delta.Yaw);
-	LYawC = LROffset.X;
-	RYawC = LROffset.Y;
+	Grounded.LYawC = LROffset.X;
+	Grounded.RYawC = LROffset.Y;
 }
 
 EMovementDirection UCharacterAnimInstance::CalculateMovementDirection() const
@@ -122,10 +122,10 @@ float UCharacterAnimInstance::CalculateStandingPlayRate()
 	const float SprintAffectSpeed = FMath::Lerp(LerpedSpeed, CharacterInformation.Speed / Config.AnimatedSprintSpeed,
 												UHelpfulFunctionLibrary::GetClampedCurveValue(this, "Weight_Gait", -2.0f, 0.0f, 1.0f));
 
-	return FMath::Clamp((SprintAffectSpeed / StrideBlend) / GetOwningComponent()->GetComponentScale().Z, 0.0f, 3.0f);
+	return FMath::Clamp((SprintAffectSpeed / Grounded.StrideBlend) / GetOwningComponent()->GetComponentScale().Z, 0.0f, 3.0f);
 }
 
 float UCharacterAnimInstance::CalculateCrouchingPlayRate()
 {
-	return FMath::Clamp(CharacterInformation.Speed / Config.AnimatedCrouchSpeed / StrideBlend / GetOwningComponent()->GetComponentScale().Z, 0.0f, 2.0f);
+	return FMath::Clamp(CharacterInformation.Speed / Config.AnimatedCrouchSpeed / Grounded.StrideBlend / GetOwningComponent()->GetComponentScale().Z, 0.0f, 2.0f);
 }

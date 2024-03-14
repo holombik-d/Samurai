@@ -37,47 +37,22 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character Information", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<ABaseCharacter> Character = nullptr;
 
+	/** Anim Graph - Grounded */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
+	FALSAnimGraphGrounded Grounded;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph", meta = (AllowPrivateAccess = "True"))
 	FVector RelativeAccelerationAmountC = FVector(0, 0, 0);
-
-	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float DiagonalScaleAmountC = 0.0;
-
+	
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
 	FVelocityBlendCpp VelocityBlend = {};
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
 	FLeanAmountC LeanAmountC = {};
-
-	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float FYawC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float BYawC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float LYawC = 0.0;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float RYawC = 0.0;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Configuration|Main Configuration", meta = (AllowPrivateAccess = "True"))
 	FALSAnimConfiguration Config;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float WalkRunBlend = 0.0f;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float StandingPlayRate = 1.0f;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float CrouchingPlayRate = 1.0f;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	float StrideBlend = 0.0f;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded", meta = (AllowPrivateAccess = "True"))
-	bool bShouldMove = false;
+	
 
 	/** Blend Curves */
 
