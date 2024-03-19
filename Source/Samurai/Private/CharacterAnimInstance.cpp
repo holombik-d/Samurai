@@ -40,9 +40,12 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 	MovementState = Character->GetMovementState();
 	Gait = Character->GetGait();
-
+	Stance = Character->GetStance();
+	
 	if(MovementState.Grounded())
 	{
+		Grounded.bShouldMove = ShouldMoveCheck();
+		
 		UpdateMovementValues(DeltaSeconds);
 		UpdateRotationValues();
 	}
@@ -128,4 +131,9 @@ float UCharacterAnimInstance::CalculateStandingPlayRate()
 float UCharacterAnimInstance::CalculateCrouchingPlayRate()
 {
 	return FMath::Clamp(CharacterInformation.Speed / Config.AnimatedCrouchSpeed / Grounded.StrideBlend / GetOwningComponent()->GetComponentScale().Z, 0.0f, 2.0f);
+}
+
+const bool UCharacterAnimInstance::ShouldMoveCheck() const
+{
+	return (CharacterInformation.bIsMoving && CharacterInformation.bHasMovementInput) || CharacterInformation.Speed > 150.f;
 }
