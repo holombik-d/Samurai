@@ -90,6 +90,12 @@ void UCharacterAnimInstance::UpdateRotationValues()
 	Grounded.RYawC = LROffset.Y;
 }
 
+void UCharacterAnimInstance::PlayTransition(const FDynamicMontageParams& Parameters)
+{
+	PlaySlotAnimationAsDynamicMontage(Parameters.Animation, "Grounded Slot", Parameters.BlendInTime,
+		Parameters.BlendOutTime, Parameters.PlayRate, 1, 0.0f, Parameters.StartTime);
+}
+
 EMovementDirection UCharacterAnimInstance::CalculateMovementDirection() const
 {
 	if(Gait.IsSprinting())
@@ -136,4 +142,9 @@ float UCharacterAnimInstance::CalculateCrouchingPlayRate()
 const bool UCharacterAnimInstance::ShouldMoveCheck() const
 {
 	return (CharacterInformation.bIsMoving && CharacterInformation.bHasMovementInput) || CharacterInformation.Speed > 150.f;
+}
+
+void UCharacterAnimInstance::SetTrackedHipsDirection(EHipsDirection HipsDirection)
+{
+	Grounded.TrackedHipsDirection = HipsDirection;
 }

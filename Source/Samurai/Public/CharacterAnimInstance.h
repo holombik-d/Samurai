@@ -26,7 +26,11 @@ public:
 	void UpdateMovementValues(float UpdateMovementValues);
 	void UpdateRotationValues();
 
+	UFUNCTION(BlueprintCallable, Category = "ALS|Animation")
+	void PlayTransition(const FDynamicMontageParams& Parameters);
+
 	EMovementDirection CalculateMovementDirection() const;
+	
 	
 	float CalculateWalkRunBlend();
 	float CalculateStrideRunBlend();
@@ -34,6 +38,10 @@ public:
 	float CalculateCrouchingPlayRate();
 
 	const bool ShouldMoveCheck() const;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Grounded")
+	void SetTrackedHipsDirection(EHipsDirection HipsDirection);
 	
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character Information", meta=(AllowPrivateAccess = "true"))

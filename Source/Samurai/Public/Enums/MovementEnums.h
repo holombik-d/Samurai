@@ -186,3 +186,14 @@ public:
 		_Sprinting = Gait == EALS_Gait::Sprinting;
 	}
 };
+
+UENUM(BlueprintType, meta = (ScriptName = "ALS_HipsDirection"))
+enum class EHipsDirection : uint8
+{
+	F,
+	B,
+	RF,
+	RB,
+	LF,
+	LB
+};

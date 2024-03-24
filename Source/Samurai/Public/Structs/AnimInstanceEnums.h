@@ -116,6 +116,9 @@ USTRUCT(BlueprintType)
 struct FALSAnimGraphGrounded
 {
 	GENERATED_BODY()
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "ALS|Anim Graph - Grounded")
+	EHipsDirection TrackedHipsDirection = EHipsDirection::F;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded")
 	bool bShouldMove = false; // Should be false initially
@@ -161,4 +164,25 @@ struct FALSAnimGraphGrounded
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Anim Graph - Grounded")
 	float RYawC = 0.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FDynamicMontageParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Dynamic Transition")
+	TObjectPtr<UAnimSequenceBase> Animation = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Dynamic Transition")
+	float BlendInTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Dynamic Transition")
+	float BlendOutTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Dynamic Transition")
+	float PlayRate = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Dynamic Transition")
+	float StartTime = 0.0f;
 };
