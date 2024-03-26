@@ -197,3 +197,38 @@ enum class EHipsDirection : uint8
 	LF,
 	LB
 };
+
+UENUM(BlueprintType, meta = (ScriptName = "ALS_OverlayState"))
+enum class EALSOverlayState : uint8
+{
+	Default,
+	Sword
+};
+
+USTRUCT(BlueprintType)
+struct FOverlayStates
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Character States")
+	EALSOverlayState State = EALSOverlayState::Default;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Character States")
+	bool _Default = true;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Character States")
+	bool _Sword = false;
+
+public:
+	FOverlayStates() {}
+	FOverlayStates(const EALSOverlayState InitState) { *this = InitState; }
+	const bool Default() { return _Default; }
+	const bool Sword() { return _Sword; }
+
+	void operator=(const EALSOverlayState NewAction)
+	{
+		State = NewAction;
+		_Default = State == EALSOverlayState::Default;
+		_Sword = State == EALSOverlayState::Sword;
+	}
+};

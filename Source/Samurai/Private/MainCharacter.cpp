@@ -41,6 +41,15 @@ void AMainCharacter::BeginPlay()
 	CustomCharacterMovementComponent->SetMovementSettings(GetTargetMovementSettings());
 }
 
+void AMainCharacter::SetOverlayState(const EALSOverlayState NewState, bool bForce)
+{
+	if(bForce == true || OverlayState != NewState)
+	{
+		const EALSOverlayState Previous = OverlayState;
+		OverlayState = NewState;
+	}
+}
+
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
@@ -257,6 +266,7 @@ void AMainCharacter::ForceUpdateCharacterState()
 {
 	SetGait(DesiredGait);
 	SetRotationMode(DesiredRotationMode, true);
+	SetOverlayState(OverlayState, true);
 }
 
 void AMainCharacter::SetMovementModel()
@@ -447,4 +457,9 @@ EALS_MovementState AMainCharacter::GetMovementState()
 EALS_Gait AMainCharacter::GetGait()
 {
 	return Gait;
+}
+
+EALSOverlayState AMainCharacter::GetOverlayState() const
+{
+	return OverlayState;
 }

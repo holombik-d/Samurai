@@ -99,4 +99,7 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
 	EALS_Stance Stance = EALS_Stance::Standing;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
+	FOverlayStates OverlayState = EALSOverlayState::Default;
 };

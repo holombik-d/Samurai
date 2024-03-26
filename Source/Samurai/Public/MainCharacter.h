@@ -121,6 +121,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UCustomCharacterMovementComponent> CustomCharacterMovementComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|State Values")
+	EALSOverlayState OverlayState = EALSOverlayState::Default;
+
+	void SetOverlayState(const EALSOverlayState NewState, bool bForce);
+
 public:
 	// Tick function and input handling
 	virtual void Tick(float DeltaTime) override;
@@ -180,5 +185,5 @@ public:
 	EALS_MovementState GetPrevMovementState();
 	EALS_MovementState GetMovementState();
 	EALS_Gait GetGait();
-	
+	EALSOverlayState GetOverlayState() const;
 };

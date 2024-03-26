@@ -41,6 +41,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	MovementState = Character->GetMovementState();
 	Gait = Character->GetGait();
 	Stance = Character->GetStance();
+	OverlayState = Character->GetOverlayState();
 	
 	if(MovementState.Grounded())
 	{
