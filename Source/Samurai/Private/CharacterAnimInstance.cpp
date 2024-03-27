@@ -5,6 +5,19 @@
 
 #include "BaseCharacter.h"
 
+static const FName NAME_BasePose_CLF(TEXT("BasePose_CLF"));
+static const FName NAME_BasePose_N(TEXT("BasePose_N"));
+static const FName NAME_Layering_Arm_L_Add(TEXT("Layering_Arm_L_Add"));
+static const FName NAME_Layering_Arm_L_LS(TEXT("Layering_Arm_L_LS"));
+static const FName NAME_Layering_Arm_R_Add(TEXT("Layering_Arm_R_Add"));
+static const FName NAME_Layering_Arm_R_LS(TEXT("Layering_Arm_R_LS"));
+static const FName NAME_Layering_Hand_L(TEXT("Layering_Hand_L"));
+static const FName NAME_Layering_Hand_R(TEXT("Layering_Hand_R"));
+static const FName NAME_Layering_Head_Add(TEXT("Layering_Head_Add"));
+static const FName NAME_Layering_Spine_Add(TEXT("Layering_Spine_Add"));
+static const FName NAME_Mask_AimOffset(TEXT("Mask_AimOffset"));
+
+
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -37,11 +50,15 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	CharacterInformation.MovementInput = Character->GetMovementInput();
 	CharacterInformation.CharacterActorRotation = Character->GetRotation();
 	CharacterInformation.PreviousMovementState = Character->GetPrevMovementState();
+
+	LayerBlendingValues.OverlayOverrideState = Character->GetOverlayOverrideState();
 	
 	MovementState = Character->GetMovementState();
 	Gait = Character->GetGait();
 	Stance = Character->GetStance();
 	OverlayState = Character->GetOverlayState();
+
+	UpdateLayerValues();
 	
 	if(MovementState.Grounded())
 	{
@@ -148,4 +165,27 @@ const bool UCharacterAnimInstance::ShouldMoveCheck() const
 void UCharacterAnimInstance::SetTrackedHipsDirection(EHipsDirection HipsDirection)
 {
 	Grounded.TrackedHipsDirection = HipsDirection;
+}
+
+void UCharacterAnimInstance::UpdateLayerValues()
+{
+	// Get the Aim Offset weight by getting the opposite of the Aim Offset Mask.
+	LayerBlendingValues.EnableAimOffset = FMath::Lerp(1.0f, 0.0f, GetCurveValue(NAME_Mask_AimOffset));
+	// Set the Base Pose weights
+	LayerBlendingValues.BasePose_N = GetCurveValue(NAME_BasePose_N);
+	LayerBlendingValues.BasePose_CLF = GetCurveValue(NAME_BasePose_CLF);
+	// Set the Additive amount weights for each body part
+	LayerBlendingValues.Spine_Add = GetCurveValue(NAME_Layering_Spine_Add);
+	LayerBlendingValues.Head_Add = GetCurveValue(NAME_Layering_Head_Add);
+	LayerBlendingValues.Arm_L_Add = GetCurveValue(NAME_Layering_Arm_L_Add);
+	LayerBlendingValues.Arm_R_Add = GetCurveValue(NAME_Layering_Arm_R_Add);
+	// Set the Hand Override weights
+	LayerBlendingValues.Hand_R = GetCurveValue(NAME_Layering_Hand_R);
+	LayerBlendingValues.Hand_L = GetCurveValue(NAME_Layering_Hand_L);
+	// Set whether the arms should blend in mesh space or local space.
+	// The Mesh space weight will always be 1 unless the Local Space (LS) curve is fully weighted.
+	LayerBlendingValues.Arm_L_LS = GetCurveValue(NAME_Layering_Arm_L_LS);
+	LayerBlendingValues.Arm_L_MS = static_cast<float>(1 - FMath::FloorToInt(LayerBlendingValues.Arm_L_LS));
+	LayerBlendingValues.Arm_R_LS = GetCurveValue(NAME_Layering_Arm_R_LS);
+	LayerBlendingValues.Arm_R_MS = static_cast<float>(1 - FMath::FloorToInt(LayerBlendingValues.Arm_R_LS));
 }

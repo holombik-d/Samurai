@@ -50,6 +50,11 @@ void AMainCharacter::SetOverlayState(const EALSOverlayState NewState, bool bForc
 	}
 }
 
+void AMainCharacter::SetOverlayOverrideState(int32 NewState)
+{
+	OverlayOverrideState = NewState;
+}
+
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
@@ -462,4 +467,9 @@ EALS_Gait AMainCharacter::GetGait()
 EALSOverlayState AMainCharacter::GetOverlayState() const
 {
 	return OverlayState;
+}
+
+int32 AMainCharacter::GetOverlayOverrideState() const
+{
+	return OverlayOverrideState;
 }

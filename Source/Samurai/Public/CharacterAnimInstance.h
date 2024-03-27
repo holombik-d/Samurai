@@ -62,7 +62,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Configuration|Main Configuration", meta = (AllowPrivateAccess = "True"))
 	FALSAnimConfiguration Config;
-	
+
+	/** Anim Graph - Layer Blending */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Anim Graph - Layer Blending", meta = (AllowPrivateAccess = "True"))
+	FALSAnimGraphLayerBlending LayerBlendingValues;
 
 	/** Blend Curves */
 
@@ -84,6 +87,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Configuration|Blend Curves", meta = (AllowPrivateAccess = "True"))
 	TObjectPtr<UCurveVector> YawOffset_LR = nullptr;
 
+private:
+	void UpdateLayerValues();
+	
 public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
 	FALSAnimCharacterInformation CharacterInformation;

@@ -124,7 +124,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|State Values")
 	EALSOverlayState OverlayState = EALSOverlayState::Default;
 
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
+	int32 OverlayOverrideState = 0;
+
 	void SetOverlayState(const EALSOverlayState NewState, bool bForce);
+	void SetOverlayOverrideState(int32 NewState);
 
 public:
 	// Tick function and input handling
@@ -186,4 +190,5 @@ public:
 	EALS_MovementState GetMovementState();
 	EALS_Gait GetGait();
 	EALSOverlayState GetOverlayState() const;
+	int32 GetOverlayOverrideState() const;
 };
